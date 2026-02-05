@@ -15,12 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landingpage');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,4 +25,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard/supervisor', function () {
+        return view('dashboard');
+    })->middleware('role:admin')
+        ->name('dashboard.supervisor');
+
+    Route::get('/dashboard/kasir', function () {
+        return view('dashboard');
+    })->middleware('role:operator')
+        ->name('dashboard.kasir');
+});
+
+Route::middleware(['auth', 'role:super_admin'])->prefix('manager')->name('manager.')->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('manager.dashboard');
+    })->name('dashboard');
+});
+
+
+require __DIR__ . '/auth.php';
