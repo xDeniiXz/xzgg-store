@@ -1,90 +1,106 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Dashboard Manager
-        </h2>
-    </x-slot>
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
 
-    <div class="py-12 bg-gray-100 dark:bg-gray-900 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-            <!-- WELCOME -->
-            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                        👋 Selamat Datang, Manager
-                    </h3>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Anda memiliki akses penuh untuk mengelola sistem toko kelontongan.
-                    </p>
-                </div>
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-gray-800 text-gray-100 hidden md:flex flex-col">
+            <div class="h-16 flex items-center justify-center text-lg font-semibold border-b border-gray-700">
+                Manager Panel
             </div>
 
-            <!-- MENU GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#"
+                    class="block px-4 py-2 rounded bg-gray-700 text-white font-medium">
+                    Dashboard
+                </a>
 
-                <!-- USER -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100">
-                        👤 Kelola User
+                <a href="#"
+                    class="block px-4 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white">
+                    Kelola User
+                </a>
+
+                <a href="#"
+                    class="block px-4 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white">
+                    Kelola Barang
+                </a>
+
+                <a href="#"
+                    class="block px-4 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white">
+                    Supplier
+                </a>
+
+                <a href="#"
+                    class="block px-4 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white">
+                    Diskon
+                </a>
+
+                <a href="#"
+                    class="block px-4 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white">
+                    Pembelian
+                </a>
+
+                <a href="#"
+                    class="block px-4 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white">
+                    Penjualan
+                </a>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6">
+
+            <!-- HEADER -->
+            <div class="mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                    Dashboard Manager
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Ringkasan sistem toko kelontongan
+                </p>
+            </div>
+
+            <!-- WELCOME CARD -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    👋 Selamat Datang
+                </h3>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Anda login sebagai <strong>Manager (Super Admin)</strong>.
+                </p>
+            </div>
+
+            <!-- STATISTIK -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Total User</p>
+                    <h4 class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        12
                     </h4>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Manajemen akun kasir dan supervisor.
-                    </p>
                 </div>
 
-                <!-- BARANG -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100">
-                        📦 Kelola Barang
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Barang</p>
+                    <h4 class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        120
                     </h4>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Tambah, ubah, dan hapus data barang.
-                    </p>
                 </div>
 
-                <!-- SUPPLIER -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100">
-                        🚚 Supplier
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Transaksi Hari Ini</p>
+                    <h4 class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        34
                     </h4>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Kelola data supplier toko.
-                    </p>
                 </div>
 
-                <!-- DISKON -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100">
-                        🏷️ Diskon
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Penjualan</p>
+                    <h4 class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        Rp 5.200.000
                     </h4>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Atur diskon dan promo.
-                    </p>
-                </div>
-
-                <!-- PEMBELIAN -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100">
-                        🧾 Pembelian
-                    </h4>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Catat transaksi pembelian barang.
-                    </p>
-                </div>
-
-                <!-- PENJUALAN -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100">
-                        💰 Penjualan
-                    </h4>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Monitor transaksi penjualan.
-                    </p>
                 </div>
 
             </div>
 
-        </div>
+        </main>
     </div>
 </x-app-layout>
