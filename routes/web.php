@@ -7,17 +7,11 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', function () {
     return view('landingpage');
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,25 +19,51 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
+// ==================== ROLE-BASED DASHBOARDS ====================
 
+// Dashboard untuk Admin (Supervisor)
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard/supervisor', function () {
         return view('dashboard');
-    })->middleware('role:admin')
-        ->name('dashboard.supervisor');
-
-    Route::get('/dashboard/kasir', function () {
-        return view('dashboard');
-    })->middleware('role:operator')
-        ->name('dashboard.kasir');
+    })->name('dashboard.supervisor');
 });
 
+// Dashboard untuk Operator (Kasir)
+Route::middleware(['auth', 'role:operator'])->group(function () {
+    Route::get('/dashboard/kasir', function () {
+        return view('dashboard');
+    })->name('dashboard.kasir');
+});
+
+// ==================== MANAGER ROUTES (SUPER ADMIN) ====================
 Route::middleware(['auth', 'role:super_admin'])->prefix('manager')->name('manager.')->group(function () {
 
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('manager.dashboard');
     })->name('dashboard');
-});
 
+    // ===== KELOLA USER (CRUD) =====
+    Route::resource('users', \App\Http\Controllers\Manager\UserController::class);
+
+    // ===== KELOLA DISKON (CRUD) =====
+    Route::resource('diskon', \App\Http\Controllers\Manager\DiskonController::class);
+
+    // ===== KELOLA BARANG (CRUD) =====
+    Route::resource('barang', \App\Http\Controllers\Manager\BarangController::class);
+
+    // ===== TRANSAKSI PEMBELIAN (Supplier langsung di sini) =====
+    Route::resource('pembelian', \App\Http\Controllers\Manager\PembelianController::class);
+
+    // ===== TRANSAKSI PENJUALAN =====
+    Route::resource('penjualan', \App\Http\Controllers\Manager\PenjualanController::class);
+    Route::put('penjualan/{penjualan}/cancel', [\App\Http\Controllers\Manager\PenjualanController::class, 'cancel'])
+        ->name('penjualan.cancel');
+
+    // ===== LAPORAN TRANSAKSI =====
+    Route::get('laporan', [\App\Http\Controllers\Manager\LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('laporan/export', [\App\Http\Controllers\Manager\LaporanController::class, 'export'])->name('laporan.export');
+    Route::get('laporan/print', [\App\Http\Controllers\Manager\LaporanController::class, 'print'])->name('laporan.print');
+});
 
 require __DIR__ . '/auth.php';
