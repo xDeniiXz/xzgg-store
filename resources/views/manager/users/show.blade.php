@@ -3,7 +3,7 @@
         <aside x-cloak class="w-72 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 fixed inset-y-0 left-0 h-screen overflow-y-auto z-40 transition-transform duration-300 ease-in-out" :class="{ '-translate-x-full': !sidebarOpen, 'pointer-events-none': !sidebarOpen, 'pointer-events-auto': sidebarOpen }">
             <div class="h-16 flex items-center px-6 border-b border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800">
                 <svg class="h-8 w-8 text-indigo-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <div>
                     <p class="font-bold text-white text-lg">XZGG Store</p>
@@ -36,8 +36,8 @@
                             </svg>
                         </button>
                         <div>
-                            <h2 class="text-3xl font-bold text-slate-100">Tambah User</h2>
-                            <p class="text-sm text-slate-400 mt-1">Buat akun baru dengan role yang sesuai</p>
+                            <h2 class="text-3xl font-bold text-slate-100">Detail User</h2>
+                            <p class="text-sm text-slate-400 mt-1">Informasi lengkap akun</p>
                         </div>
                     </div>
                 </div>
@@ -55,41 +55,35 @@
                     </div>
                 </div>
                 <div class="p-6 bg-slate-800 border border-slate-700 rounded-xl shadow-sm max-w-xl">
-                    <form method="POST" action="{{ route('manager.users.store') }}" class="space-y-6">
-                        @csrf
-                        <div>
-                            <x-input-label for="name" :value="__('Nama')" />
-                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" required autofocus autocomplete="name" />
-                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                        </div>
-                        <div>
-                            <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email')" required autocomplete="username" />
-                            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-                        </div>
-                        <div>
-                            <x-input-label for="password" :value="__('Password')" />
-                            <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" required autocomplete="new-password" />
-                            <x-input-error class="mt-2" :messages="$errors->get('password')" />
-                        </div>
-                        <div>
-                            <x-input-label for="password_confirmation" :value="__('Konfirmasi Password')" />
-                            <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" required autocomplete="new-password" />
-                        </div>
-                        <div>
-                            <x-input-label for="role" :value="__('Role')" />
-                            <select id="role" name="role" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                                <option value="operator" {{ old('role') === 'operator' ? 'selected' : '' }}>Operator</option>
-                                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="super_admin" {{ old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('role')" />
-                        </div>
+                    <div class="space-y-4">
                         <div class="flex items-center gap-3">
-                            <x-primary-button>Simpan</x-primary-button>
-                            <a href="{{ route('manager.users.index') }}" class="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100">Batal</a>
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                            <div>
+                                <p class="text-lg font-bold text-slate-100">{{ $user->name }}</p>
+                                <p class="text-sm text-slate-400">{{ $user->email }}</p>
+                            </div>
                         </div>
-                    </form>
+                        <div>
+                            <p class="text-xs text-slate-400 mb-1">Role</p>
+                            <span class="px-2 py-1 text-xs rounded-full
+                                @if($user->role === 'super_admin') bg-indigo-900/40 text-indigo-300 border border-indigo-700 @endif
+                                @if($user->role === 'admin') bg-amber-900/40 text-amber-300 border border-amber-700 @endif
+                                @if($user->role === 'operator') bg-emerald-900/40 text-emerald-300 border border-emerald-700 @endif">
+                                {{ strtoupper(str_replace('_',' ',$user->role)) }}
+                            </span>
+                            @if($user->id === auth()->id())
+                            <span class="ml-2 px-2 py-1 text-xs rounded-full bg-slate-800 text-slate-300 border border-slate-700">Akun Anda</span>
+                            @endif
+                        </div>
+                        <div class="flex items-center gap-2 mt-4">
+                            @if($user->id !== auth()->id())
+                            <a href="{{ route('manager.users.edit', $user) }}" class="px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white">Edit</a>
+                            @endif
+                            <a href="{{ route('manager.users.index') }}" class="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100">Kembali</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

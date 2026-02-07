@@ -2,7 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" x-data="{ submitting: false }" x-on:submit="submitting = true; localStorage.setItem('authRedirect','1')">
         @csrf
 
         <!-- Email Address -->
@@ -39,7 +39,7 @@
             </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="ms-3" x-bind:class="submitting ? 'opacity-50 cursor-not-allowed' : ''" x-bind:disabled="submitting">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>

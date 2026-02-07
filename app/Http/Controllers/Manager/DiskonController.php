@@ -11,9 +11,24 @@ class DiskonController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $diskons = Diskon::latest()->paginate(10);
+        $sortField = in_array($request->get('sort_field'), ['nama_diskon', 'jenis_diskon', 'nilai', 'kuota', 'status', 'created_at'])
+            ? $request->get('sort_field')
+            : 'nama_diskon';
+        $sortDir = $request->get('sort_dir') === 'desc' ? 'desc' : 'asc';
+        $q = $request->get('q');
+
+        $query = Diskon::query();
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('nama_diskon', 'like', "%{$q}%")
+                  ->orWhere('status', 'like', "%{$q}%")
+                  ->orWhere('jenis_diskon', 'like', "%{$q}%");
+            });
+        }
+
+        $diskons = $query->orderBy($sortField, $sortDir)->paginate(10)->appends($request->query());
         return view('manager.diskon.index', compact('diskons'));
     }
 

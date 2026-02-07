@@ -13,9 +13,24 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(10);
+        $sortField = in_array($request->get('sort_field'), ['name', 'email', 'role', 'created_at'])
+            ? $request->get('sort_field')
+            : 'name';
+        $sortDir = $request->get('sort_dir') === 'desc' ? 'desc' : 'asc';
+        $q = $request->get('q');
+
+        $query = User::query();
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%")
+                    ->orWhere('role', 'like', "%{$q}%");
+            });
+        }
+        $users = $query->orderBy($sortField, $sortDir)->paginate(10)->appends($request->query());
+
         return view('manager.users.index', compact('users'));
     }
 
@@ -63,6 +78,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if ($user->id === auth()->id()) {
+            return redirect()->route('manager.users.index')
+                ->with('error', 'Tidak dapat mengedit akun sendiri!');
+        }
         return view('manager.users.edit', compact('user'));
     }
 
@@ -71,6 +90,10 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if ($user->id === auth()->id()) {
+            return redirect()->route('manager.users.index')
+                ->with('error', 'Tidak dapat mengedit akun sendiri!');
+        }
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],

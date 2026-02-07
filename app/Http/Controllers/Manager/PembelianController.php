@@ -13,11 +13,23 @@ class PembelianController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pembelians = TransaksiPembelian::with(['produk', 'user'])
-            ->latest('tanggal')
-            ->paginate(15);
+        $sortField = in_array($request->get('sort_field'), ['tanggal', 'nama_supplier', 'harga_beli', 'jumlah', 'created_at'])
+            ? $request->get('sort_field')
+            : 'tanggal';
+        $sortDir = $request->get('sort_dir') === 'desc' ? 'desc' : 'asc';
+        $q = $request->get('q');
+
+        $query = TransaksiPembelian::with(['produk', 'user']);
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('nama_supplier', 'like', "%{$q}%")
+                  ->orWhere('kontak_supplier', 'like', "%{$q}%");
+            });
+        }
+
+        $pembelians = $query->orderBy($sortField, $sortDir)->paginate(15)->appends($request->query());
 
         return view('manager.pembelian.index', compact('pembelians'));
     }

@@ -14,11 +14,27 @@ class PenjualanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $penjualans = TransaksiPenjualan::with(['produk', 'user', 'diskon'])
-            ->latest('tanggal')
-            ->paginate(15);
+        $sortField = in_array($request->get('sort_field'), ['tanggal', 'total', 'jumlah', 'harga_satuan', 'status', 'created_at'])
+            ? $request->get('sort_field')
+            : 'tanggal';
+        $sortDir = $request->get('sort_dir') === 'desc' ? 'desc' : 'asc';
+        $q = $request->get('q');
+
+        $query = TransaksiPenjualan::with(['produk', 'user', 'diskon']);
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('status', 'like', "%{$q}%");
+            })->orWhereHas('produk', function ($p) use ($q) {
+                $p->where('nama_produk', 'like', "%{$q}%");
+            })->orWhereHas('user', function ($u) use ($q) {
+                $u->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            });
+        }
+
+        $penjualans = $query->orderBy($sortField, $sortDir)->paginate(15)->appends($request->query());
 
         return view('manager.penjualan.index', compact('penjualans'));
     }

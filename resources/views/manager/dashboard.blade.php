@@ -1,9 +1,9 @@
-<x-app-layout>
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex" x-data="{ sidebarOpen: true }">
+<x-app-layout :hideNavigation="true">
+    <div class="min-h-screen bg-slate-900 flex" x-data="{ sidebarOpen: false, isNavigating: false, initialized: false }" x-bind:class="isNavigating ? 'disable-transitions' : ''" x-init="$nextTick(() => { initialized = true }); window.addEventListener('beforeunload', () => { isNavigating = true }); document.addEventListener('click', (e) => { const a = e.target.closest('a[href]'); if (a && !a.hasAttribute('download') && a.getAttribute('target') !== '_blank' && !a.getAttribute('href')?.startsWith('#')) { isNavigating = true } })">
 
         <!-- SIDEBAR -->
-        <aside class="w-72 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 fixed inset-y-0 left-0 h-screen overflow-y-auto z-40 transition-transform duration-300 ease-in-out"
-            :class="{ '-translate-x-full': !sidebarOpen }">
+        <aside x-cloak class="w-72 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 fixed inset-y-0 left-0 h-screen overflow-y-auto z-40"
+            :class="{ '-translate-x-full': !sidebarOpen, 'pointer-events-none': !sidebarOpen, 'pointer-events-auto': sidebarOpen, 'transition-transform duration-300 ease-in-out': initialized }">
             <!-- Logo / Brand -->
             <div class="h-16 flex items-center px-6 border-b border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800">
                 <svg class="h-8 w-8 text-indigo-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -28,6 +28,15 @@
 
                 <!-- Divider -->
                 <div class="my-4 border-t border-slate-700"></div>
+
+                <!-- Halaman Utama -->
+                <a href="{{ url('/') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-all duration-200">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Halaman Utama</span>
+                </a>
 
                 <!-- Master Data Section -->
                 <p class="px-4 py-2 text-xs font-semibold uppercase text-slate-500 tracking-wide">Master Data</p>
@@ -157,7 +166,7 @@
         </aside>
 
         <!-- MAIN CONTENT -->
-        <main class="flex-1 ml-72 transition-all duration-300 ease-in-out" :class="{ 'ml-0': !sidebarOpen }">
+        <main class="flex-1 transition-all duration-300 ease-in-out" :class="sidebarOpen ? 'lg:ml-72' : 'lg:ml-0'">
             <!-- Overlay for mobile -->
             <div class="fixed inset-0 bg-black/50 z-30 transition-opacity duration-300"
                 @click="sidebarOpen = false"
@@ -168,7 +177,7 @@
             </div>
 
             <!-- TOP HEADER -->
-            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+            <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
                 <div class="px-6 lg:px-8 py-4 flex justify-between items-center">
                     <div class="flex items-center gap-4">
                         <!-- Sidebar Toggle Button -->
@@ -179,10 +188,10 @@
                         </button>
 
                         <div>
-                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+                            <h2 class="text-3xl font-bold text-slate-100">
                                 Dashboard Manager
                             </h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            <p class="text-sm text-slate-400 mt-1">
                                 Selamat datang kembali, <span class="font-semibold">{{ Auth::user()->name }}</span>!
                             </p>
                         </div>
@@ -210,7 +219,7 @@
             </header>
 
             <!-- DASHBOARD CONTENT -->
-            <div class="p-6 lg:p-8 space-y-6 bg-gray-50 dark:bg-gray-950 min-h-screen">
+            <div class="p-6 lg:p-8 space-y-6 bg-slate-900 min-h-screen">
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Total User -->
@@ -397,5 +406,15 @@
             </div>
         </main>
 
+    </div>
+    <div x-cloak x-show="isNavigating" class="fixed inset-0 z-[999] flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div class="relative flex items-center gap-3 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg shadow-lg">
+            <svg class="w-5 h-5 text-indigo-400 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="4" class="opacity-25"></circle>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M4 12a8 8 0 018-8" class="opacity-75"></path>
+            </svg>
+            <span class="text-sm text-slate-200">Memuat halaman…</span>
+        </div>
     </div>
 </x-app-layout>
