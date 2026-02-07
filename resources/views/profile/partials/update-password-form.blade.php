@@ -9,7 +9,7 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6" x-data="{ submitting: false }" x-on:submit="submitting = true">
         @csrf
         @method('put')
 
@@ -32,7 +32,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button x-bind:class="submitting ? 'opacity-50 cursor-not-allowed' : ''" x-bind:disabled="submitting">{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'password-updated')
                 <p

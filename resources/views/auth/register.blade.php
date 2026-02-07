@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" x-data="{ submitting: false }" x-on:submit="submitting = true; localStorage.setItem('authRedirect','1')">
         @csrf
 
         <!-- Name -->
@@ -44,7 +44,7 @@
                 {{ __('Already registered?') }}
             </a>
 
-            <x-primary-button class="ms-4">
+            <x-primary-button class="ms-4" x-bind:class="submitting ? 'opacity-50 cursor-not-allowed' : ''" x-bind:disabled="submitting">
                 {{ __('Register') }}
             </x-primary-button>
         </div>
